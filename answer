@@ -1,0 +1,46 @@
+Code:
+
+class Solution {
+public:
+    vector<vector<string>> result;
+
+    void backtrack(vector<string>& board, int row, int n,
+                   vector<bool>& cols, vector<bool>& diag1,
+                   vector<bool>& diag2) {
+        if (row == n) {
+            result.push_back(board);
+            return;
+        }
+
+        for (int col = 0; col < n; col++) {
+            int d1 = row - col + n - 1;
+            int d2 = row + col;
+
+            if (cols[col] || diag1[d1] || diag2[d2])
+                continue;
+
+            board[row][col] = 'Q';
+            cols[col] = diag1[d1] = diag2[d2] = true;
+
+            backtrack(board, row + 1, n, cols, diag1, diag2);
+
+            board[row][col] = '.';
+            cols[col] = diag1[d1] = diag2[d2] = false;
+        }
+    }
+
+    vector<vector<string>> solveNQueens(int n) {
+        vector<string> board(n, string(n, '.'));
+        vector<bool> cols(n, false);
+        vector<bool> diag1(2 * n - 1, false);
+        vector<bool> diag2(2 * n - 1, false);
+
+        backtrack(board, 0, n, cols, diag1, diag2);
+
+        return result;
+    }
+};
+
+Explanation:
+
+Place one queen in each row, checking that its column and diagonals are free. If a placement leads to no solution, backtrack and try another column until all valid boards are found.
